@@ -59,7 +59,7 @@ describe('SideBar Component', () => {
     );
 
     // await user.click(screen.getByText(/Users/i));
-    let userTitle = screen.getByRole("link", { name: /Users/i });
+    let userTitle = screen.getByRole("link", { name: /User/i });
     // let userTitle = screen.getByText(/Users/i);
     // let userTitle = screen.getByRole('heading', {
     //   name: /user profile/i
