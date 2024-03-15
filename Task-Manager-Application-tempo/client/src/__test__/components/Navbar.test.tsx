@@ -62,7 +62,7 @@ describe('NavBar Component', () => {
       <RouterProvider router={router} />
     );
     //checks if we are on user page
-    const userHeader = screen.getByRole("heading", { name: /User/i })
+    const userHeader = screen.getByRole("heading", { name: /User Pro/i })
     expect(userHeader).toBeVisible();
 
     //check for "about us" on navbar
