@@ -19,6 +19,9 @@ jobs:
       - name: Install Dependencies
         working-directory: ./Task-Manager-Application-tempo/client
         run: npm install
+
+        - name: Install jq
+  run: sudo apt-get install jq
       - name: Run Test Cases
         working-directory: ./Task-Manager-Application-tempo/client
         run: npm test --prefix ./ -- --coverage
@@ -32,3 +35,16 @@ jobs:
             echo "All tests passed and coverage is 100%. Commit allowed."
             exit 0
           fi
+
+
+# Run the test coverage check
+coverage=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+
+# Check if coverage is less than 100%
+if (( $(echo "$coverage < 100" | bc -l) )); then
+    echo "Some tests failed or coverage is incomplete. Commit not allowed."
+    exit 1
+else
+    echo "All tests passed and coverage is 100%. Commit allowed."
+    exit 0
+fi
