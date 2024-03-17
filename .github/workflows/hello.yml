@@ -1,13 +1,12 @@
 name: Test on Commit
-
 on:
   push:
     branches:
-      - main 
+      - main # Adjust the branch name as needed
 jobs:
   test:
     name: Run Test Cases
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -20,6 +19,9 @@ jobs:
       - name: Install Dependencies
         working-directory: ./Task-Manager-Application-tempo/client
         run: npm install
+
+        - name: Install jq
+  run: sudo apt-get install jq
       - name: Run Test Cases
         working-directory: ./Task-Manager-Application-tempo/client
         run: npm test --prefix ./ -- --coverage
@@ -33,5 +35,6 @@ jobs:
             echo "All tests passed and coverage is 100%. Commit allowed."
             exit 0
           fi
+
 
 
