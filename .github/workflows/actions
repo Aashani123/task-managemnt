@@ -1,0 +1,41 @@
+name: Unit Test on Commit
+
+on:
+  push:
+    branches:
+      - main 
+jobs:
+  test:
+    name: Run Test Cases
+    runs-on: windows-latest
+defaults:
+run:
+working-directory:./Task-Manager-Application-tempo/client
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "21.6.1" # Adjust the Node.js version as needed
+      - name: Change to client directory
+        run: cd Task-Manager-Application-tempo/client
+      - name: Install Dependencies
+        working-directory: ./Task-Manager-Application-tempo/client
+        run: npm install
+      - name: Run Test Cases
+        working-directory: ./Task-Manager-Application-tempo/client
+        run: npm test --prefix ./ -- --coverage
+      - name: Check Test Coverage
+        run: |
+          coverage=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
+          if (( $(echo "$coverage < 100" | bc -l) )); then
+            echo "Some tests failed or coverage is incomplete. Commit not allowed."
+            exit 1
+          else
+            echo "All tests passed and coverage is 100%. Commit allowed."
+            exit 0
+          fi
+
+
