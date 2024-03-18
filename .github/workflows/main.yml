@@ -1,50 +1,42 @@
-name: Test on Commit
+name: TaskManager Test 2
+
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
-      - main # Adjust the branch name as needed
+      - main
+
 jobs:
   test:
-    name: Run Test Cases
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./Task-Manager-Application-tempo/client/
+    strategy:
+      matrix:
+        node-version: [21.6.0]
+    env:
+      MODE: "dev"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "21.6.1" # Adjust the Node.js version as needed
-      - name: Change to client directory
-        run: cd Task-Manager-Application-tempo/client
+          node-version: "21.6.0" # Adjust the Node.js version as needed
+
       - name: Install Dependencies
-        working-directory: ./Task-Manager-Application-tempo/client
         run: npm install
 
-        - name: Install jq
-  run: sudo apt-get install jq
-      - name: Run Test Cases
-        working-directory: ./Task-Manager-Application-tempo/client
-        run: npm test --prefix ./ -- --coverage
-      - name: Check Test Coverage
-        run: |
-          coverage=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
-          if (( $(echo "$coverage < 100" | bc -l) )); then
-            echo "Some tests failed or coverage is incomplete. Commit not allowed."
-            exit 1
-          else
-            echo "All tests passed and coverage is 100%. Commit allowed."
-            exit 0
-          fi
+      - name: Test Code
+        run: npm run test
 
-
-# Run the test coverage check
-coverage=$(cat coverage/coverage-summary.json | jq -r '.total.lines.pct')
-
-# Check if coverage is less than 100%
-if (( $(echo "$coverage < 100" | bc -l) )); then
-    echo "Some tests failed or coverage is incomplete. Commit not allowed."
-    exit 1
-else
-    echo "All tests passed and coverage is 100%. Commit allowed."
-    exit 0
-fi
+permissions:
+  push:
+    contents: read
+  pull_request:
+    contents: read
+    metadata: write
